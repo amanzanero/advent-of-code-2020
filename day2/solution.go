@@ -39,8 +39,8 @@ func parseInput(fileName string) []Line {
 	lib.Check(absFilePathErr)
 
 	file, err := os.Open(absFilePath)
-	defer file.Close()
 	lib.Check(err)
+	defer lib.Check(file.Close())
 
 	scanner := bufio.NewScanner(file)
 	for scanner.Scan() {
