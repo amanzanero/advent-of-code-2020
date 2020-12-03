@@ -14,6 +14,10 @@ func check(e error) {
 	}
 }
 
+func Check(e error) {
+	check(e)
+}
+
 func GetIntArrayInput(filename string) []int {
 	result := make([]int, 0) // len(a)=5
 	absFilePath, absFilePathErr := filepath.Abs(filename)
