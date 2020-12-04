@@ -39,3 +39,21 @@ func GetIntArrayInput(filename string) []int {
 
 	return result
 }
+
+func ParseLines(filename string) []string {
+	lines := make([]string, 0)
+
+	absFilePath, absFilePathErr := filepath.Abs(filename)
+	Check(absFilePathErr)
+
+	file, err := os.Open(absFilePath)
+	Check(err)
+	defer file.Close()
+
+	scanner := bufio.NewScanner(file)
+	for scanner.Scan() {
+		lines = append(lines, scanner.Text())
+	}
+	Check(scanner.Err())
+	return lines
+}
