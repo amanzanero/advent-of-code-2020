@@ -49,28 +49,19 @@ func partTwo() int {
 }
 
 func parseSeatId(sequence string) float64 {
-	row := binaryBoarding(sequence[:7], 'F')
-	col := binaryBoarding(sequence[7:], 'L')
+	row := evaluateBinary(sequence[:7], 'B')
+	col := evaluateBinary(sequence[7:], 'R')
 	return row*8 + col
 }
 
-func binaryBoarding(sequence string, comp uint8) float64 {
-	bits := math.Pow(2, float64(len(sequence)))
+func evaluateBinary(sequence string, comp uint8) float64 {
+	var ans float64 = 0
+	lastIndex := len(sequence) - 1
 
-	start, end := float64(0), bits-1
-
-	var midpoint float64
-
-	for i := 0; i < len(sequence); i++ {
-		char := sequence[i]
-		midpoint = (start + end) / 2
-		if char == comp {
-			end = math.Floor(midpoint)
-		} else {
-			start = math.Ceil(midpoint)
+	for i := lastIndex; i >= 0; i-- {
+		if sequence[i] == comp {
+			ans += math.Pow(2, float64(lastIndex-i))
 		}
 	}
-
-	// can be start or end by this point since start == end
-	return start
+	return ans
 }
