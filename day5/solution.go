@@ -12,16 +12,13 @@ func main() {
 	fmt.Println(partTwo())
 }
 
-func partOne() int {
+func partOne() float64 {
 	parsedLines := lib.ParseLines("day5/input.txt")
-	max := math.MinInt64
+	var max float64 = -1
 
 	for _, line := range parsedLines {
-		row := binaryBoarding(line[:7], 'F')
-		col := binaryBoarding(line[7:], 'L')
-
-		seatId := row*8 + col
-		max = int(math.Max(float64(seatId), float64(max)))
+		seatId := parseSeatId(line)
+		max = math.Max(seatId, max)
 	}
 	return max
 }
@@ -30,21 +27,20 @@ func partTwo() int {
 	parsedLines := lib.ParseLines("day5/input.txt")
 
 	// parse all ids
-	sids := make([]int, 0)
+	seatIds := make([]float64, 0)
 	for _, line := range parsedLines {
-		row := binaryBoarding(line[:7], 'F')
-		col := binaryBoarding(line[7:], 'L')
-
-		seatId := row*8 + col
-		sids = append(sids, seatId)
+		seatId := parseSeatId(line)
+		seatIds = append(seatIds, seatId)
 	}
-	sort.Ints(sids)
+	sort.Float64s(seatIds)
 
 	// find missing id
-	for index, currId := range sids[1:] {
-		prevId := sids[index]
-		if currId-prevId > 1 {
-			return currId - 1
+	for index, currId := range seatIds[1:] {
+		prevId := seatIds[index]
+		isNotContiguous := currId-prevId > 1
+
+		if isNotContiguous {
+			return int(currId - 1)
 		}
 	}
 
@@ -52,22 +48,29 @@ func partTwo() int {
 	return -1
 }
 
-func binaryBoarding(sequence string, comp uint8) int {
+func parseSeatId(sequence string) float64 {
+	row := binaryBoarding(sequence[:7], 'F')
+	col := binaryBoarding(sequence[7:], 'L')
+	return row*8 + col
+}
+
+func binaryBoarding(sequence string, comp uint8) float64 {
 	bits := math.Pow(2, float64(len(sequence)))
 
-	start, end := 0, int(bits)-1
+	start, end := float64(0), bits-1
 
-	var midpoint int
+	var midpoint float64
 
 	for i := 0; i < len(sequence); i++ {
 		char := sequence[i]
 		midpoint = (start + end) / 2
 		if char == comp {
-			end = midpoint
+			end = math.Floor(midpoint)
 		} else {
-			start = midpoint + 1
-			midpoint = start
+			start = math.Ceil(midpoint)
 		}
 	}
-	return midpoint
+
+	// can be start or end by this point since start == end
+	return start
 }
