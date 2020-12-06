@@ -23,7 +23,7 @@ func partOne() float64 {
 	return max
 }
 
-func partTwo() int {
+func partTwo() float64 {
 	parsedLines := lib.ParseLines("day5/input.txt")
 
 	// parse all ids
@@ -40,7 +40,7 @@ func partTwo() int {
 		isNotContiguous := currId-prevId > 1
 
 		if isNotContiguous {
-			return int(currId - 1)
+			return currId - 1
 		}
 	}
 
@@ -51,16 +51,15 @@ func partTwo() int {
 func parseSeatId(sequence string) float64 {
 	row := evaluateBinary(sequence[:7], 'B')
 	col := evaluateBinary(sequence[7:], 'R')
-	return row*8 + col
+	return float64(row*8 + col)
 }
 
-func evaluateBinary(sequence string, comp uint8) float64 {
-	var ans float64 = 0
-	lastIndex := len(sequence) - 1
+func evaluateBinary(sequence string, comp uint8) int {
+	ans, lastIndex := 0, len(sequence)-1
 
 	for i := lastIndex; i >= 0; i-- {
 		if sequence[i] == comp {
-			ans += math.Pow(2, float64(lastIndex-i))
+			ans |= 1 << (lastIndex - i)
 		}
 	}
 	return ans
