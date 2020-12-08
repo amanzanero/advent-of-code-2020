@@ -24,7 +24,11 @@ func GetIntArrayInput(filename string) []int {
 	check(absFilePathErr)
 
 	file, err := os.Open(absFilePath)
-	defer file.Close()
+	closeFile := func() {
+		closeErr := file.Close()
+		check(closeErr)
+	}
+	defer closeFile()
 
 	check(err)
 
@@ -48,7 +52,11 @@ func ParseLines(filename string) []string {
 
 	file, err := os.Open(absFilePath)
 	Check(err)
-	defer file.Close()
+	closeFile := func() {
+		closeErr := file.Close()
+		check(closeErr)
+	}
+	defer closeFile()
 
 	scanner := bufio.NewScanner(file)
 	for scanner.Scan() {
