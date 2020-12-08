@@ -24,7 +24,7 @@ func main() {
 func partOne(vm *vmachine.VMachine) int {
 	// run the program
 	vm.RunProgram()
-	return vm.GetLastAcc()
+	return vm.Acc()
 }
 
 func partTwo(vm *vmachine.VMachine) int {
@@ -45,7 +45,7 @@ func partTwo(vm *vmachine.VMachine) int {
 			replace(index)
 			replacedCopy.RunProgram()
 			if !replacedCopy.IsCorrupted() {
-				return replacedCopy.GetLastAcc()
+				return replacedCopy.Acc()
 			}
 		}
 	}

@@ -3,10 +3,10 @@ package vmachine
 import "errors"
 
 type VMachine struct {
-	acc, instruction, lastAcc int
-	Ops                       []Op
-	history                   map[int]bool
-	corrupted                 bool
+	acc, instruction int
+	Ops              []Op
+	history          map[int]bool
+	corrupted        bool
 }
 
 func CreateVMachine() *VMachine {
@@ -28,7 +28,6 @@ func (vm *VMachine) Copy() *VMachine {
 	return &VMachine{
 		acc:         vm.acc,
 		instruction: vm.instruction,
-		lastAcc:     vm.lastAcc,
 		Ops:         cpyOps,
 		history:     cpyHistory,
 		corrupted:   vm.corrupted,
@@ -51,6 +50,9 @@ func (vm *VMachine) RunProgram() {
 	for true {
 		if vm.instruction == len(vm.Ops) {
 			break
+		} else if vm.instruction > len(vm.Ops) || vm.instruction < 0 {
+			vm.corrupted = true
+			break
 		}
 
 		op := vm.NextOp()
@@ -66,7 +68,6 @@ func (vm *VMachine) RunProgram() {
 func (vm *VMachine) Reset() {
 	vm.acc = 0
 	vm.instruction = 0
-	vm.lastAcc = 0
 	vm.history = make(map[int]bool)
 	vm.corrupted = false
 }
@@ -76,12 +77,11 @@ func (vm *VMachine) AddHistory() error {
 		return errors.New("loop detected")
 	}
 	vm.history[vm.instruction] = true
-	vm.lastAcc = vm.acc
 	return nil
 }
 
-func (vm *VMachine) GetLastAcc() int {
-	return vm.lastAcc
+func (vm *VMachine) Acc() int {
+	return vm.acc
 }
 
 func (vm *VMachine) ReplaceJmpAt(n int) {

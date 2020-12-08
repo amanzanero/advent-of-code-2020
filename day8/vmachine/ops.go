@@ -27,9 +27,13 @@ func (op *AccOp) Value() int {
 
 func (op *AccOp) Execute(vm *VMachine) error {
 	err := vm.AddHistory()
+	if err != nil {
+		return err
+	}
+
 	vm.acc += op.value
 	vm.instruction += 1
-	return err
+	return nil
 }
 
 type JmpOp struct {
@@ -47,8 +51,12 @@ func (op *JmpOp) Value() int {
 
 func (op *JmpOp) Execute(vm *VMachine) error {
 	err := vm.AddHistory()
+	if err != nil {
+		return err
+	}
+
 	vm.instruction += op.value
-	return err
+	return nil
 }
 
 type NOp struct {
@@ -66,8 +74,12 @@ func (op *NOp) Value() int {
 
 func (op *NOp) Execute(vm *VMachine) error {
 	err := vm.AddHistory()
+	if err != nil {
+		return err
+	}
+
 	vm.instruction += 1
-	return err
+	return nil
 }
 
 func ParseOpFromString(line string) Op {
